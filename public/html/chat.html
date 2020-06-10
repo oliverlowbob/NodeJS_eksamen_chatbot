@@ -1,0 +1,107 @@
+
+
+<h2>Chatsite</h2>
+<b id="h3"></b>
+<div id="loggedin"></div>
+
+
+<input id="message" placeholder="Message" />
+<button id="btn-submit" onclick="onMsgSubmitted()">Send</button>
+<div id="messages"></div>
+<div class="typing"></div>
+
+
+<script>
+var url = window.location.href;
+toId = url.substring(url.lastIndexOf('/')+1)
+console.log(toId);
+
+
+
+
+fetch("/userinfo").then(function(response) {
+        return response.json();
+        }).then(function(data) {  
+          document.getElementById("loggedin").innerHTML = data.username + " is now logged in";
+    });
+    //laver socket og connecter 
+    const socket = io.connect("localhost:3000");
+
+    //sender brugerinfo når der connectes
+    socket.on('connect', function (data) {
+      fetch("/userinfo").then(function(response) {
+        return response.json();
+        }).then(function(data) {  
+        //userid kommer via vores session, den sættes når der logges ind i auth route
+        socket.emit('storeClientInfo', { customId: data.userId });
+          
+    });
+
+
+    });
+
+    //function der sender beskeden når der trykkes send på knappen ovenover
+    function onMsgSubmitted() {
+            //tager data fra message-feltet og sætter feltet til ingenting
+            const message = $('#message').val();
+            $('#message').val("");
+            fetch("/userinfo").then(function(response) {
+        return response.json();
+        }).then(function(data) {  
+        //userid kommer via vores session, den sættes når der logges ind i auth route
+        socket.emit("send-message", { message: message, from: data.username, to: toId });
+          
+    });
+            //sender beskeden, samt info om hvem der sender, og hvor den skal hen. username og fromid sættes get-requesten i app.js
+            
+        }
+        //når der modtages en besked, vises den i en div
+        socket.on("recieve-message", data => {
+            $('#messages').prepend(`<div>${data.from}: ${data.message}</div>`);
+        });
+
+
+var timeout;
+
+function timeoutFunction() {
+    typing = false;
+    socket.emit("typing", false);
+}
+
+$('.typing-message').keyup(function() {
+    console.log('happening');
+    typing = true;
+    socket.emit('typing', 'typing...');
+    clearTimeout(timeout);
+    timeout = setTimeout(timeoutFunction, 2000);
+});
+
+socket.on('typing', function(data) {
+    if (data) {
+        $('.typing').append(data);
+    } else {
+        $('.typing').append("");
+    }
+});
+
+
+
+    //henter info om brugeren man chatter med via fromId, der er sat i get-requesten med req param
+        fetch("/user/"+toId).then(function(response) {
+        return response.json();
+        }).then(function(data) {
+            //sætter bold feltet til det første element vi får tilbage, da vi får svar i array
+            document.getElementById("h3").innerHTML = "Chatting with " + data[0].username
+        })
+</script>
+
+
+    
+    
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    
+    </body>
+    </html>

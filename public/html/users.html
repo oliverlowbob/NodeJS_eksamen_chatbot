@@ -1,0 +1,113 @@
+
+
+<div id="loggedin"> is now logged in </div>
+
+
+    <h1>All users</h1>
+    <a href="/logout" id="signUpBtn">Sign out</a>
+
+        <table id="table" style="width:100%">
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+            </tr>
+          </table>
+
+
+      <script>
+
+
+
+
+    
+    // //laver socket og connecter 
+    // const socket = io.connect("localhost:3000");
+
+    // //sender brugerinfo når der connectes
+    // socket.on('connect', function (data) {
+    //   fetch("/userinfo").then(function(response) {
+    //     return response.json();
+    //     }).then(function(data) {  
+    //     //userid kommer via vores session, den sættes når der logges ind i auth route
+    //     socket.emit('storeClientInfo', { customId: data.userId });
+          
+    // });
+
+
+    // });
+
+    // var clients 
+
+
+
+
+    // fetch("/clients").then(function(response) {
+    //     return response.json();
+    //     }).then(function(data) {  
+    //       var clientsString = JSON.stringify(data)
+    //       clients = JSON.parse(clientsString)
+    //       console.log(data)
+    // });
+
+    fetch("/userinfo").then(function(response) {
+        return response.json();
+        }).then(function(data) {  
+          document.getElementById("loggedin").innerHTML = data.username + " is now logged in";
+    });
+
+
+
+    fetch("/userinfo").then(function(response) {
+        return response.json();
+        }).then(function(data) {  
+          userId = data.userId
+          username = data.username
+          
+    });
+
+
+
+
+
+        const url = "/users";
+        fetch(url).then(function(response) {
+        return response.json();
+        }).then(function(data) {
+          
+        var table = document.getElementById("table");
+
+        for (var i = 0; i<data.length; i++) {
+          user = data[i]
+          
+          var row = table.insertRow(i+1);
+          var column1 = row.insertCell(0);
+          var column2 = row.insertCell(1);
+          var column3 = row.insertCell(2);
+          var column4 = row.insertCell(3);
+          column1.innerHTML = user.username;
+          column2.innerHTML = user.email;
+          column3.innerHTML +="<a href=/sendmessage/"+user.id+" target='popup' onclick='window.open('/sendmessage/"+user.id+"','popup','width=600,height=300'); return false;'' >Start chatting</a>" ;
+          // for(var j = 0; j<clients.length; j++){
+          //   if(clients[j].customId == user.id){
+          //     column4.innerHTML +="Online"
+          //   }
+          // }            
+    }
+    //console.log(data);
+  });
+
+// //you want reload once after first load
+// window.onload = function() {
+//     //considering there aren't any hashes in the urls already
+//     if(!window.location.hash) {
+//         //setting window location
+//         window.location = window.location + '#loaded';
+//         //using reload() method to reload web page
+//         window.location.reload();
+//     }
+// }
+
+
+
+      </script>
+
