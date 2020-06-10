@@ -34,7 +34,7 @@ route.post("/login", async (req, res, next) => {
                         res.redirect(req.session.myValue)
                     }
                     else{
-                        res.status(400).send({response: "password is not correct", pw : hashedPW})
+                        res.status(400).send({response: "password is not correct"})
                     }
                     
                 });

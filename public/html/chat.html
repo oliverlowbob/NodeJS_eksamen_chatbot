@@ -25,7 +25,7 @@ fetch("/userinfo").then(function(response) {
           document.getElementById("loggedin").innerHTML = data.username + " is now logged in";
     });
     //laver socket og connecter 
-    const socket = io.connect("localhost:3000");
+    const socket = io.connect("52.91.148.16:3000");
 
     //sender brugerinfo når der connectes
     socket.on('connect', function (data) {
