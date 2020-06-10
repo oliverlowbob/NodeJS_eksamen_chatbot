@@ -44,7 +44,7 @@ route.post("/login", async (req, res, next) => {
             }
         } catch (error) {
             console.log(error)
-            return res.status(500).send({ response: "Something went wrong with the database" });
+            return res.status(500).send({ response: "Something went wrong with the database", error: error });
         }
     }
     else{
@@ -109,7 +109,7 @@ route.post("/signup", async (req, res) => {
             }
             
             } catch (error) {
-                return res.status(500).send({ response: "Something went wrong with the database" });
+                return res.status(500).send({ response: "Something went wrong with the database", error: error });
             }
         }
     } else if (password && passwordRepeat && !isPasswordTheSame) {
