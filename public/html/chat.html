@@ -15,6 +15,7 @@
     document.getElementById('btn-submit').addEventListener('keypress', function(event) {
         if (event.keyCode == 13) {
             event.preventDefault();
+            onMsgSubmitted();
         }
     });
 
