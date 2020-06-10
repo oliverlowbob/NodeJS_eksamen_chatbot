@@ -22,9 +22,9 @@ exports.up = function(knex) {
 };  
 // DML = MANIPULATE = SELECT, UPDATE, DELETE ROWS
 // DDL = DEFINE = CREATE, DROP TABLES
-// exports.down = function(knex) {
-//   return knex.schema
-//     .dropTableIfExists("users")
-//     .dropTableIfExists("roles");
+exports.down = function(knex) {
+  return knex.schema
+    .dropTableIfExists("users")
+    .dropTableIfExists("roles");
 
-// };
+};
