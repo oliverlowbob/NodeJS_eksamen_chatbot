@@ -12,6 +12,14 @@
 
 
 <script>
+    document.getElementById('btn-submit').addEventListener('keypress', function(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+        }
+    });
+
+
+
 var url = window.location.href;
 toId = url.substring(url.lastIndexOf('/')+1)
 console.log(toId);
